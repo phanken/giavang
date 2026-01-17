@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Giá Vàng Live</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .box {
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            width: 360px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #d4af37;
+            margin-bottom: 20px;
+        }
+
+        .item {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #fafafa;
+            border-radius: 6px;
+        }
+
+        .label {
+            font-weight: bold;
+        }
+
+        .value {
+            margin-top: 5px;
+            font-size: 18px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #d4af37;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .time {
+            text-align: center;
+            font-size: 13px;
+            color: gray;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h1>Giá Vàng Live</h1>
+
+    <div class="item">
+        <div class="label">🌍 Vàng thế giới (XAU/USD)</div>
+        <div class="value" id="worldGold">Đang tải...</div>
+    </div>
+
+    <div class="item">
+        <div class="label">🇻🇳 Vàng SJC (VNĐ/lượng)</div>
+        <div class="value" id="sjcGold">Đang tải...</div>
+    </div>
+
+    <button onclick="loadGold()">Cập nhật</button>
+
+    <div class="time" id="updateTime"></div>
+</div>
+
+<script>
+async function loadGold() {
+    try {
+        const res = await fetch("https://www.vang.today/api/prices");
+        const data = await res.json();
+
+        // Vàng thế giới
+        const xau = data.find(item => item.symbol === "XAUUSD");
+        document.getElementById("worldGold").innerText =
+            xau.price.toFixed(2) + " USD/oz";
+
+        // Vàng SJC
+        const sjc = data.find(item => item.symbol === "SJC");
+        document.getElementById("sjcGold").innerText =
+            sjc.buy.toLocaleString("vi-VN") + " / " +
+            sjc.sell.toLocaleString("vi-VN");
+
+        document.getElementById("updateTime").innerText =
+            "Cập nhật: " + new Date().toLocaleString("vi-VN");
+
+    } catch (e) {
+        alert("Không lấy được dữ liệu giá vàng");
+    }
+}
+
+loadGold();
+</script>
+
+</body>
+</html>
